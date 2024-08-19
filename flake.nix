@@ -94,6 +94,12 @@
                 });
               })
             ];
+            assertions = [
+              {
+                assertion = cfg.cpuSerialNumber != "";
+                message = "You must provide a CPU serial number to the ucodenix service.";
+              }
+            ];
           };
         };
     };
