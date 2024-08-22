@@ -7,7 +7,7 @@
     let
       pkgs = import nixpkgs { system = "x86_64-linux"; };
 
-      ucodenix = { cpuSerialNumber }: pkgs.stdenv.mkDerivation rec {
+      ucodenix = { cpuSerialNumber ? "test" }: pkgs.stdenv.mkDerivation rec {
         pname = "ucodenix";
         version = "1.0.0";
 
@@ -17,8 +17,6 @@
           rev = "e605d60009ab1af7d1cd2d08c2e235ab09ffeaf1";
           hash = "sha256-J7lXxo0MHAghlGlsbliSXvaOSSxiSRpP9TJmUm8eWb0=";
         };
-
-        nativeBuildInputs = [ pkgs.amd-ucodegen ];
 
         unpackPhase = ''
           mkdir -p $out
@@ -30,7 +28,7 @@
         buildPhase = ''
           mkdir -p $out/kernel/x86/microcode
           microcodeFile=$(find $out -name "cpu*.bin" | head -n 1)
-          amd-ucodegen $microcodeFile
+          ${pkgs.lib.getExe pkgs.amd-ucodegen} $microcodeFile
           mv microcode_amd*.bin $out/kernel/x86/microcode/AuthenticAMD.bin
         '';
 
